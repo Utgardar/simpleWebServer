@@ -1,4 +1,4 @@
-FROM golang:1.14-buster AS build
+FROM --platform=$BUILDPLATFORM golang:1.14-buster AS build
 
 WORKDIR /src/
 ADD ./ /src/
@@ -6,6 +6,7 @@ ADD ./ /src/
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 
+RUN echo "Running on ${BUILDPLATFORM}, building for ${TARGETPLATFORM}"
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETPLATFORM} go build -o simplewebserver
 RUN useradd -u 10001 scratchuser
 
