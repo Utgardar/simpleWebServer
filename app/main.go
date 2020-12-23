@@ -15,8 +15,10 @@ func noRoute(c *gin.Context) {
 	c.String(http.StatusInternalServerError, "Wrong URI address")
 }
 
-func setupServer(port string) *gin.Engine {
-	gin.SetMode(gin.ReleaseMode)
+func setupServer(debug bool) *gin.Engine {
+	if !debug {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	r := gin.Default()
 
 	r.GET("/:message", messageRoute)
@@ -25,6 +27,6 @@ func setupServer(port string) *gin.Engine {
 	return r
 }
 
-func RunServer(port string) {
-	setupServer(port).Run()
+func RunServer(port string, debug bool) {
+	setupServer(debug).Run(":" + port)
 }

@@ -14,10 +14,11 @@ var rootCmd = &cobra.Command{
 	Long:  "Webserver which returns a simple answer",
 	Run: func(cmd *cobra.Command, args []string) {
 		port, _ := cmd.Flags().GetString("port")
+		debug, _ := cmd.Flags().GetBool("debug")
 		if port == "" {
 			port = "8765"
 		}
-		app.RunServer(port)
+		app.RunServer(port, debug)
 	},
 }
 
@@ -30,4 +31,5 @@ func Execute() {
 func init() {
 	cobra.OnInitialize()
 	rootCmd.PersistentFlags().String("port", "8765", "Web server port")
+	rootCmd.PersistentFlags().Bool("debug", false, "Enable for GIN")
 }
