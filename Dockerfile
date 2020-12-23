@@ -7,7 +7,7 @@ ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 
 RUN echo "Running on ${BUILDPLATFORM}, building for ${TARGETPLATFORM}"
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETPLATFORM} go build -o simplewebserver
+RUN CGO_ENABLED=0 GOOS=$(echo ${TARGETPLATFORM} | awk -F"/" '{print $1}') GOARCH=$(echo ${TARGETPLATFORM} | awk -F"/" '{print $2}') go build -o simplewebserver
 RUN useradd -u 10001 scratchuser
 
 FROM scratch
