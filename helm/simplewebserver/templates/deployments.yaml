@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- toYaml .Values.simplewebserver.labels | nindent 4 }}
+spec:
+  replicas: {{ .Values.simplewebserver.replicaCount }}
+  selector:
+    matchLabels:
+      {{- toYaml .Values.simplewebserver.labels | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.simplewebserver.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- toYaml .Values.simplewebserver.labels | nindent 8 }}
+    spec:
+      containers:
+        - name: "{{ .Chart.Name }}-a"
+          image: "{{ .Values.simplewebserver.image.repository }}"
+          ports:
+            - name: http
+              containerPort: {{ .Values.simplewebserver.service.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.simplewebserver.resources | nindent 12 }}
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always

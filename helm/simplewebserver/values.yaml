@@ -1,0 +1,25 @@
+# Default values for simplewebserver.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+namespace: simplewebserver
+
+simplewebserver:
+  replicaCount: 1
+  labels:
+    appName: simplewebserver
+  image:
+    repository: l13t/simplewebserver
+  service:
+    type: ClusterIP
+    port: 8765
+  podAnnotations: {}
+  resources:
+    requests:
+      cpu: 40m
+      memory: 100Mi
+  hpa:
+    minReplicas: 1
+    maxReplicas: 25
+    cpuAvgUtil: 1
+  ingress:
+    domain: simplewebservice.example.com

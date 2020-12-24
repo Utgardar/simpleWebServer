@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Chart.Name }}-ingress
+  namespace: {{ .Values.namespace }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/default-backend: {{ .Chart.Name }}-svc
+spec:
+  rules:
+  - host: {{ .Values.simplewebserver.ingress.domain }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ .Chart.Name }}-svc
+          servicePort: {{ .Values.simplewebserver.service.port }}
