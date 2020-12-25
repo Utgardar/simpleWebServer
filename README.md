@@ -55,3 +55,19 @@ To stop you need to run next command:
 ```shell
 ./manage.sh stop-k8s
 ```
+
+## Additional parameters for application
+
+```shell
+> simpleserver --help
+
+Webserver which returns a simple answer
+
+Usage:
+  typeform [flags]
+
+Flags:
+      --debug         Enable for GIN
+  -h, --help          help for typeform
+      --port string   Web server port (default "8765")
+```
