@@ -3,6 +3,13 @@
 
 start ()
 {
+    multipass launch --name simplewebserver --cpus 4 --mem 4g --disk 20g
+    multipass mount ${PWD} simplewebserver:/home/ubuntu/simplewebserver
+    multipass exec simplewebserver -- bash -c "sudo /home/ubuntu/simplewebserver/manage.sh install"
+}
+
+start-k8s ()
+{
     echo "Create namespaces where run applications"
     kubectl create namespace nginx-ingress
     kubectl create namespace simplewebserver
@@ -18,7 +25,21 @@ start ()
     helm upgrade simplewebserver ./helm/simplewebserver --namespace simplewebserver -i -f ./helm/simplewebserver/values.yaml
 }
 
+install ()
+{
+    apt update && apt -y install ansible
+    ansible-playbook /home/ubuntu/simplewebserver/ansible/nginx.yml
+}
+
 stop ()
+{
+    multipass umount simplewebserver
+    multipass stop simplewebserver
+    multipass delete simplewebserver
+    multipass purge
+}
+
+stop-k8s ()
 {
     helm delete --namespace simplewebserver simplewebserver
     helm delete --namespace nginx-ingress nginx-ingress
@@ -30,6 +51,15 @@ start)
     ;;
 stop)
     stop
+    ;;
+start-k8s)
+    start-k8s
+    ;;
+stop-k8s)
+    stop-k8s
+    ;;
+install)
+    install
     ;;
 *)
     echo "Howto run app: $0 (start|stop)"

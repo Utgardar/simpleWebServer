@@ -1,0 +1,65 @@
+---
+- hosts: localhost
+  tasks:
+    - name: install all required packages
+      apt:
+        name: "{{item}}"
+        state: present
+        update_cache: yes
+      loop:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg-agent
+        - software-properties-common
+        - nginx
+    - name: add GPG key for Docker repository
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: add docker repository to apt
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu {{ansible_distribution_release}} stable
+        state: present
+    - name: install docker
+      apt:
+        name: "{{item}}"
+        state: latest
+        update_cache: yes
+      loop:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+    - name: Make sure docker is started and enabled
+      service:
+        name: docker
+        state: started
+        enabled: yes
+    - name: ensure nginx is at the latest version
+      apt: name=nginx state=latest
+      become: yes
+    - name: start nginx
+      service:
+          name: nginx
+          state: started
+      become: yes
+    - name: copy the nginx config file and restart nginx
+      copy:
+        src: nginx_default_site.conf
+        dest: /etc/nginx/sites-available/simplewebserver.cfg
+      become: yes
+    - name: create symlink
+      file:
+        src: /etc/nginx/sites-available/simplewebserver.cfg
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+      become: yes
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+      become: yes
+    - name: install systemd unit file
+      template: src=simplewebserver.service dest=/etc/systemd/system/simplewebserver.service
+    - name: start simple web server
+      systemd: state=started name=simplewebserver daemon_reload=yes

@@ -1,0 +1,14 @@
+[Unit]
+Description=Simple Web Server
+After=docker.service
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=docker run -p 8765:8765 -d l13t/simplewebserver
+
+[Install]
+WantedBy=multi-user.target
