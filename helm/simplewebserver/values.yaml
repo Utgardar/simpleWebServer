@@ -22,4 +22,4 @@ simplewebserver:
     maxReplicas: 25
     cpuAvgUtil: 1
   ingress:
-    domain: simplewebservice.example.com
+    domain: <example.com>

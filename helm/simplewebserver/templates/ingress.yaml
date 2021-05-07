@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .Chart.Name }}-ingress
@@ -8,9 +8,14 @@ metadata:
     nginx.ingress.kubernetes.io/default-backend: {{ .Chart.Name }}-svc
 spec:
   rules:
-  - host: {{ .Values.simplewebserver.ingress.domain }}
-    http:
-      paths:
-      - backend:
-          serviceName: {{ .Chart.Name }}-svc
-          servicePort: {{ .Values.simplewebserver.service.port }}
+    - host: {{ .Values.simplewebserver.ingress.domain }}
+      http:
+        paths:
+          -
+            backend:
+              service:
+                name: {{ .Chart.Name }}-svc
+                port:
+                  number: {{ .Values.simplewebserver.service.port }}
+            path: /
+            pathType: "Prefix"
