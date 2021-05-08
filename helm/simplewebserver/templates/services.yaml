@@ -4,6 +4,7 @@ metadata:
   name: {{ .Chart.Name }}-svc
   namespace: {{ .Values.namespace }}
 spec:
+  type: {{ .Values.simplewebserver.service.type }}
   selector:
     {{- toYaml .Values.simplewebserver.labels | nindent 4 }}
   ports:
